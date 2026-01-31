@@ -67,7 +67,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return response()->json([
                     'error' => [
                         'status' => 403,
-                        'message' => 'Forbidden.',
+                        'message' => 'Forbidden! This action is unauthorized.',
                     ]
                 ], 403);
             }

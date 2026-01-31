@@ -15,6 +15,17 @@ class ApiRolePermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+
+            'access-roles',
+            'create-role',
+            'edit-role',
+            'delete-role',
+            'access-permission',
+            'create-permission',
+            'edit-permmission',
+            'delete-permission',
+
+            'access-members',
             'create-member',
             'edit-member',
             'partial-edit-member',
@@ -23,29 +34,32 @@ class ApiRolePermissionSeeder extends Seeder
             'restore-deleted-member',
             'list-member',
 
-            'settings',
-            'general-setting',
+            'access-settings',
             'edit-setting-contact-details',
             'edit-setting-copyright-text',
             'edit-logo',
             'edit-setting-social-links',
             'edit-setting-maintenance',
+            
+            'access-users',
+            'create-user',
+            'edit-user',
+            'list-user',
+            'delete-user',
 
-            'create-operator',
-            'edit-operator',
-            'list-operator',
-            'delete-operator',
-
+            'access-donation-purposes',
             'create-donation-purpose',
             'edit-donation-purpose',
             'list-donation-purpose',
             'delete-donation-purpose',
 
+            'access-quick-qr',
             'list-quick-qr',
             'create-quick-qr',
             'print-quick-qr',
             'delete-quick-qr',
 
+            'access-reports',
             'daily-report-pdf',
             'daily-report-excel',
             'range-report-pdf',
@@ -64,9 +78,9 @@ class ApiRolePermissionSeeder extends Seeder
             );
         }
 
-        $adminRole = Role::create(['name' => 'admin', 'guard_name' => 'sanctum']);
-        $officeAdminRole = Role::create(['name' => 'office-admin', 'guard_name' => 'sanctum']);
-        $operatorRole  = Role::create(['name' => 'operator', 'guard_name' => 'sanctum']);
+        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'sanctum']);
+        $officeAdminRole = Role::firstOrCreate(['name' => 'office-admin', 'guard_name' => 'sanctum']);
+        $operatorRole  = Role::firstOrCreate(['name' => 'operator', 'guard_name' => 'sanctum']);
 
         $adminRole->givePermissionTo(Permission::all());
         $officeAdminRole->givePermissionTo(Permission::all());

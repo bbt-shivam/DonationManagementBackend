@@ -13,7 +13,7 @@ class RoleController extends Controller
         try {
             return $this->success(['roles' => Role::with('permissions')->get()]);
         } catch (\Exception $e){
-            // throw $e;
+            throw $e;
         }
     }
 
@@ -59,6 +59,8 @@ class RoleController extends Controller
 
         if($request->permissions){
             $role->syncPermissions($request->permissions);
+        } else {
+            $role->syncPermissions([]);
         }
 
         return $this->success(['role' => $role->load('permissions')], "Role updated.");

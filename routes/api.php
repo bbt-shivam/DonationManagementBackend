@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\SettingController;
+use App\Http\Controllers\Api\V1\UserController;
 
 // api versions
 Route::prefix('v1')
@@ -24,21 +25,19 @@ Route::prefix('v1')
             Route::get('/profile', [ProfileController::class, 'show']);
             Route::post('/change-password', [AuthController::class, 'changePassword']);
             
-            Route::post('/maintenance', [SettingController::class, 'toggleMaintenance'])
-                ->middleware('permission:edit-setting-maintenance');
-
+            
             //admin routes
             Route::prefix('admin')
-                ->middleware('role:admin')
-                ->group(function() {
+            ->group(function() {
+                    Route::post('/maintenance', [SettingController::class, 'toggleMaintenance'])
+                        ->middleware('permission:edit-setting-maintenance');
 
-                    Route::apiResource('roles', RoleController::class);
-                    Route::apiResource('permissions', PermissionController::class)->except(['show']);
+                    Route::middleware('permission:access-roles')->apiResource('roles', RoleController::class);
+                    Route::middleware('permission:access-permissions')->apiResource('permissions', PermissionController::class)
+                        ->except(['show']);
 
-                    Route::get('/users', [AdminUserController::class, 'index']);
-                    Route::delete('/users/{id}', [AdminUserController::class, 'destroy']); 
+                    Route::middleware('permission:access-users')->apiResource('/users', UserController::class);
             });
-
 
         });
 
