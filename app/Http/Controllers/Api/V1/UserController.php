@@ -18,7 +18,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('roles')->select('id','name','email')->where('id', '!=', auth()->id())->get();
+        $users = User::with('roles')->select('id', 'name', 'email')->where('id', '!=', auth()->id())->get();
+
         return $this->success(['users' => $users]);
     }
 
@@ -48,11 +49,11 @@ class UserController extends Controller
 
         $user = User::create($validated);
 
-        if (!empty($validated['roles'])) {
+        if (! empty($validated['roles'])) {
             $user->syncRoles($validated['roles']);
         }
 
-        if (!empty($validated['permissions'])) {
+        if (! empty($validated['permissions'])) {
             $user->syncPermissions($validated['permissions']);
         }
 
@@ -64,13 +65,13 @@ class UserController extends Controller
         } catch (\Exception $e) {
             Log::error('Mail queue failed', [
                 'error' => $e->getMessage(),
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ]);
         }
 
         return $this->success([
             'user' => $user,
-            'generated_password' => $plainPassword
+            'generated_password' => $plainPassword,
         ], 'User created successfully');
     }
 

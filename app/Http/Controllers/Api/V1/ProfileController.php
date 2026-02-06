@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
-    public function show(Request $request){
+    public function show(Request $request)
+    {
         return $this->success($request->user());
     }
 }

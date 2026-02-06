@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class ApiRolePermissionSeeder extends Seeder
 {
@@ -40,7 +39,7 @@ class ApiRolePermissionSeeder extends Seeder
             'edit-logo',
             'edit-setting-social-links',
             'edit-setting-maintenance',
-            
+
             'access-users',
             'create-user',
             'edit-user',
@@ -80,7 +79,7 @@ class ApiRolePermissionSeeder extends Seeder
 
         $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'sanctum']);
         $officeAdminRole = Role::firstOrCreate(['name' => 'office-admin', 'guard_name' => 'sanctum']);
-        $operatorRole  = Role::firstOrCreate(['name' => 'operator', 'guard_name' => 'sanctum']);
+        $operatorRole = Role::firstOrCreate(['name' => 'operator', 'guard_name' => 'sanctum']);
 
         $adminRole->givePermissionTo(Permission::all());
         $officeAdminRole->givePermissionTo(Permission::all());

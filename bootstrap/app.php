@@ -1,24 +1,23 @@
 <?php
 
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\ApiMaintenanceMode;
 use App\Http\Middleware\EnsureAccountIsActive;
 use App\Http\Middleware\ForcePasswordChange;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-
-use Spatie\Permission\Middleware\RoleMiddleware;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
-        api: __DIR__ . '/../routes/api.php',
-        commands: __DIR__ . '/../routes/console.php',
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -26,6 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api([
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
+            \App\Http\Middleware\LogUserActivity::class,
+
         ]);
         $middleware->alias([
             'api.maintenance' => ApiMaintenanceMode::class,
@@ -33,7 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'force.password.change' => ForcePasswordChange::class,
-            'account.active' => EnsureAccountIsActive::class
+            'account.active' => EnsureAccountIsActive::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
@@ -53,7 +54,7 @@ return Application::configure(basePath: dirname(__DIR__))
                         'status' => 422,
                         'message' => $e->getMessage(),
                         'errors' => $e->errors(),
-                    ]
+                    ],
                 ], 422);
             }
 
@@ -62,7 +63,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'error' => [
                         'status' => 401,
                         'message' => 'Unauthenticated.',
-                    ]
+                    ],
                 ], 401);
             }
 
@@ -71,7 +72,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'error' => [
                         'status' => 403,
                         'message' => 'Forbidden! This action is unauthorized.',
-                    ]
+                    ],
                 ], 403);
             }
 
@@ -87,7 +88,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'error' => [
                     'status' => $status,
                     'message' => $message,
-                ]
+                ],
             ], $status);
         });
     })->create();

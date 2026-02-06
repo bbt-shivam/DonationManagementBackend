@@ -15,21 +15,21 @@ class ApiMaintenanceMode
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(app()->isDownForMaintenance()){
+        if (app()->isDownForMaintenance()) {
             $user = $request->user();
 
-            if($user && $user->hasAnyRole(['admin' => 'office-admin'])){
+            if ($user && $user->hasAnyRole(['admin' => 'office-admin'])) {
                 return next($request);
             }
 
             return response()->json([
                 'error' => [
                     'status' => 503,
-                    'message' => 'System is under maintenance. Please try again later.'
-                ], 503
+                    'message' => 'System is under maintenance. Please try again later.',
+                ], 503,
             ]);
         }
-          
+
         return $next($request);
     }
 }

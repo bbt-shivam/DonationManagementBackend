@@ -9,16 +9,20 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $request->validate([
             'email' => 'required|string|email',
-            'password' => 'required|string'
+            'password' => 'required|string',
         ]);
 
         $user = User::where('email', $request->email)->first();
 
-        if(! $user || !Hash::check($request->password, $user->password)){
+        if ($user && $user->lock_until && now()->lessThan($user->lock_until)) {
+            return $this->error('Account locked due to maximum faileed attempt. Try again later.', 401, null, 'ACCOUNT_LOCKED');
+        }
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return $this->error(
                 'The provided credentials are incorrect.',
                 401
@@ -29,16 +33,19 @@ class AuthController extends Controller
 
         return $this->success([
             'user' => $user,
-            'token' => $token
+            'token' => $token,
         ], 'Login Successfull');
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $request->user()->tokens()->delete();
+
         return $this->success(null, 'Successfully logged out');
     }
 
-    public function changePassword(Request $request){
+    public function changePassword(Request $request)
+    {
         $request->validate([
             'old_password' => ['required', 'current_password'],
             'password' => ['required', 'string', 'min:6', 'confirmed', 'different:old_password'],
@@ -51,7 +58,7 @@ class AuthController extends Controller
         ]);
 
         $user->tokens()->delete();
-        if($user->must_change_password) {
+        if ($user->must_change_password) {
             $user->must_change_password = false;
 
             $user->sendEmailVerificationNotification();
@@ -59,6 +66,6 @@ class AuthController extends Controller
             $user->save();
         }
 
-        return $this->success(null, "Password changed successfully. Please login again.", 200);
+        return $this->success(null, 'Password changed successfully. Please login again.', 200);
     }
 }

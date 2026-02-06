@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // })->where('any', '^(?!api).*$');
 
-
 Route::fallback(function () {
     return view('welcome');
 });
-

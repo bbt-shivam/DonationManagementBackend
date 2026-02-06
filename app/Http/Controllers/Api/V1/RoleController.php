@@ -12,7 +12,7 @@ class RoleController extends Controller
     {
         try {
             return $this->success(['roles' => Role::with('permissions')->get()]);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -26,16 +26,16 @@ class RoleController extends Controller
     {
         $request->validate([
             'name' => 'required|unique:roles,name',
-            'permissions' => 'array'
+            'permissions' => 'array',
         ]);
 
-        $role = Role::create(['name' => $request->name, "guard_name" => 'sanctum']);
+        $role = Role::create(['name' => $request->name, 'guard_name' => 'sanctum']);
 
-        if($request->permissions){
+        if ($request->permissions) {
             $role->syncPermissions($request->permissions);
         }
 
-        return $this->success($role->load('permissions'), "Role created.");
+        return $this->success($role->load('permissions'), 'Role created.');
     }
 
     public function show(Role $role)
@@ -51,25 +51,25 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $request->validate([
-            'name' => "required|unique:roles,name," . $role->id,
-            'permissions' => 'array'
+            'name' => 'required|unique:roles,name,'.$role->id,
+            'permissions' => 'array',
         ]);
 
         $role->update(['name' => $request->name]);
 
-        if($request->permissions){
+        if ($request->permissions) {
             $role->syncPermissions($request->permissions);
         } else {
             $role->syncPermissions([]);
         }
 
-        return $this->success(['role' => $role->load('permissions')], "Role updated.");
+        return $this->success(['role' => $role->load('permissions')], 'Role updated.');
     }
 
     public function destroy(Role $role)
     {
         $role->delete();
 
-        return $this->success(null, "Role deleted");
+        return $this->success(null, 'Role deleted');
     }
 }

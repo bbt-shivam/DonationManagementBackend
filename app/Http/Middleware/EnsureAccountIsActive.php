@@ -9,8 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureAccountIsActive
 {
-
     use ApiResponse;
+
     /**
      * Handle an incoming request.
      *
@@ -19,7 +19,7 @@ class EnsureAccountIsActive
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        if(!$user){
+        if (! $user) {
             return $this->error(
                 'Unauthenticated',
                 401,
@@ -28,7 +28,7 @@ class EnsureAccountIsActive
             );
         }
 
-        if($user->deleted_at){
+        if ($user->deleted_at) {
             return $this->error(
                 'Account is deactivated',
                 403,
@@ -37,7 +37,7 @@ class EnsureAccountIsActive
             );
         }
 
-        if(!$user->hasVerifiedEmail()){
+        if (! $user->hasVerifiedEmail()) {
             return $this->error(
                 'Email not verified',
                 403,
@@ -45,6 +45,7 @@ class EnsureAccountIsActive
                 'EMAIL_NOT_VERIFIED'
             );
         }
+
         return $next($request);
     }
 }

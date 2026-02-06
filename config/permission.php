@@ -198,8 +198,8 @@ return [
          */
 
         'store' => 'default',
-        ],
-        'defaults' => [
-            'guard' => 'sanctum',
-        ],
+    ],
+    'defaults' => [
+        'guard' => 'sanctum',
+    ],
 ];
