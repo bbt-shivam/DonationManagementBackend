@@ -1,4 +1,4 @@
-# Donation Management Backend
+# A secure, auditable, scalable Laravel 11 API foundation
 
 This is a Laravel backend application.
 
